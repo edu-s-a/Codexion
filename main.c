@@ -1,0 +1,97 @@
+#include "codexion.h"
+
+int overflow_check(const char *str){
+    int is_negative;
+    size_t len;
+    
+    is_negative = 0;
+    len = strlen(str);
+
+    if (str[0] == '-' || str[0] == '+')
+    {
+        is_negative = (str[0] == '-');
+        len--;
+    }
+    if (len > 10)
+        return 1;
+    if (len < 10)
+        return 0;
+    if (is_negative)
+    {
+        if (strcmp(str + 1, "2147483648") > 0)
+            return 1;
+    }else{
+        if(strcmp(str+ (str[0] == '+'), "2147483647") > 0)
+        return 1;
+    }
+    return 0;
+}
+
+int parse_args (char **argv, t_config *config){
+
+    int i;
+
+    i = 1;
+    while (i < 9){
+        if (overflow_check(argv[i])) {
+            fprintf(stderr, "ERROR: Value too large.\n");
+            return 1;
+        }
+        i++;
+    }
+    config->num_coders = atoi(argv[1]);
+    config->burnout_time = atoi(argv[2]);
+    config->compile_time = atoi(argv[3]);
+    config->debug_time = atoi(argv[4]);
+    config->refactor_time = atoi(argv[5]);
+    config->num_compiles = atoi(argv[6]);
+    config->cooldown = atoi(argv[7]);
+    config->scheduler = argv[8];
+    return 0;
+}
+
+int validate_args (t_config *config){
+    
+    if (config->num_coders <1 || config->num_coders > 200){
+        fprintf(stderr, "ERROR: Invalid number of coders.   Range = [1-200]\n");
+        return 1;
+    }
+    if (config->burnout_time <= 0 || config->compile_time <= 0 || 
+        config->debug_time <= 0 || config->refactor_time <= 0 || 
+        config->cooldown <= 0){
+            fprintf(stderr, "ERROR: Invalid time.   Range = [0-INT_MAX]\n");
+            return 1;
+    }
+    if (config->num_compiles < 0 ){
+        fprintf(stderr, "ERROR: Invalid number of compilers.   Range = [0-INT_MAX]\n");
+        return 1;
+    }
+    if (strcmp(config->scheduler, "fifo") != 0
+        && strcmp(config->scheduler, "edf") !=0){
+            fprintf(stderr, "ERROR: Invalid scheduler.  Must be \"fifo\" or \"edf\"\n");
+            return 1;
+        }
+    return 0;
+}
+
+int main(int argc, char **argv){
+    
+    t_config config;
+
+    if (argc != 9){
+        fprintf(stderr,"ERROR: input should be 8 arguments long.\n");
+        fprintf(stderr,"Input order:\n -number_of_coders\n -time_to_burnout\n "
+                "-time_to_compile\n -time_to_debug\n "
+                "-time_to_refactor\n -number_of_compiles_required\n "
+                "-dongle_cooldown\n -scheduler\n");
+        return(EXIT_FAILURE);
+            
+    }else{
+        if (parse_args(argv, &config))
+            return 1;
+        if (validate_args(&config))
+            return 1;
+    }
+    return 0;
+}
+
