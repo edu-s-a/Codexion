@@ -1,39 +1,62 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
+/*   Updated: 2026/09/29 19:24:39 by edsole-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
-int overflow_check(const char *str){
-    int is_negative;
-    size_t len;
-    
-    is_negative = 0;
-    len = strlen(str);
+int is_valid_int(const char *str)
+{
+	int		is_negative;
+	size_t	len;
+	int		i;
 
-    if (str[0] == '-' || str[0] == '+')
-    {
-        is_negative = (str[0] == '-');
-        len--;
-    }
-    if (len > 10)
-        return 1;
-    if (len < 10)
-        return 0;
-    if (is_negative)
-    {
-        if (strcmp(str + 1, "2147483648") > 0)
-            return 1;
-    }else{
-        if(strcmp(str+ (str[0] == '+'), "2147483647") > 0)
-        return 1;
-    }
-    return 0;
+	i = 0;
+	is_negative = 0;
+	len = strlen(str);
+	if (str[0] == '-' || str[0] == '+')
+	{
+		is_negative = (str[0] == '-');
+		len--;
+		i++;
+	}
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (1);
+		i++;
+	}
+	if (len > 10 || len == 0)
+		return (1);
+	if (len < 10)
+		return (0);
+	if (is_negative)
+	{
+		if (strcmp(str + 1, "2147483648") > 0)
+			return (1);
+	}
+	else
+	{
+		if (strcmp(str + (str[0] == '+'), "2147483647") > 0)
+			return (1);
+	}
+	return (0);
 }
 
-int parse_args (char **argv, t_config *config){
-
+int	parse_args(char **argv, t_config *config)
+{
     int i;
 
     i = 1;
-    while (i < 9){
-        if (overflow_check(argv[i])) {
+    while (i < 8){
+        if (is_valid_int(argv[i])) {
             fprintf(stderr, "ERROR: Value too large.\n");
             return 1;
         }
@@ -50,7 +73,8 @@ int parse_args (char **argv, t_config *config){
     return 0;
 }
 
-int validate_args (t_config *config){
+int validate_args (t_config *config)
+{
     
     if (config->num_coders <1 || config->num_coders > 200){
         fprintf(stderr, "ERROR: Invalid number of coders.   Range = [1-200]\n");
@@ -58,12 +82,12 @@ int validate_args (t_config *config){
     }
     if (config->burnout_time <= 0 || config->compile_time <= 0 || 
         config->debug_time <= 0 || config->refactor_time <= 0 || 
-        config->cooldown <= 0){
+        config->cooldown < 0){
             fprintf(stderr, "ERROR: Invalid time.   Range = [0-INT_MAX]\n");
             return 1;
     }
     if (config->num_compiles < 0 ){
-        fprintf(stderr, "ERROR: Invalid number of compilers.   Range = [0-INT_MAX]\n");
+        fprintf(stderr, "ERROR: Invalid number of compiles.   Range = [0-INT_MAX]\n");
         return 1;
     }
     if (strcmp(config->scheduler, "fifo") != 0
@@ -74,9 +98,11 @@ int validate_args (t_config *config){
     return 0;
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
     
     t_config config;
+    t_sim sim;
 
     if (argc != 9){
         fprintf(stderr,"ERROR: input should be 8 arguments long.\n");
@@ -92,6 +118,9 @@ int main(int argc, char **argv){
         if (validate_args(&config))
             return 1;
     }
+    gettimeofday(&sim.t0, NULL);
+    usleep(250000);
+    printf("\nElapsed time: %ldms\n\n", get_elapsed_time(&sim));
     return 0;
 }
 
