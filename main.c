@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/30 13:44:25 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/09/30 18:51:23 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,8 @@ int validate_args (t_config *config)
 
 int main(int argc, char **argv)
 {
-    
-    t_sim sim;
+    t_thread_arg	t_arg;
+    t_sim           sim;
 
     if (argc != 9){
         fprintf(stderr,"ERROR: input should be 8 arguments long.\n");
@@ -128,6 +128,19 @@ int main(int argc, char **argv)
     if (validate_args(&sim.config))
         return (1);
 
+    //TEST
+    if (pthread_mutex_init(&sim.log_lock, NULL) != 0)
+        return (1);
+    gettimeofday(&sim.t0, NULL);
+    sim.stopped = false;
+    if (!init_sim(&sim))
+		return (1);
+	t_arg.sim = &sim;
+	t_arg.coder_id = 0;
+    pthread_create(&sim.coders[0].thread, NULL, coder_routine, &t_arg);
+    pthread_join(sim.coders[0].thread, NULL);
+	destroy_sim(&sim);
+    //END TEST
     return (0);
 }
 
