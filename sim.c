@@ -23,7 +23,11 @@ bool    init_sim(t_sim *sim)
         sim->dongles[i].cooldown = 0;
         sim->dongles[i].held = false;
         if (pthread_mutex_init(&sim->dongles[i].d_mutex, NULL) != 0)
+        {
+            free(sim->dongles);
+            free(sim->coders);
             return (false);
+        }
         i++;
     }
     i = 0;
