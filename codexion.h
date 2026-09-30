@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/30 14:02:18 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/09/30 18:44:43 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,20 @@ typedef struct s_sim
     t_coder         *coders;
 }   t_sim;
 
+typedef struct s_thread_arg
+{
+	t_sim	*sim;
+	int		coder_id;
+}	t_thread_arg;
+
 long    get_elapsed_time(t_sim *sim);
 void    log_msg(t_sim *sim, int coder_id, const char *msg);
 
 //SIM
 bool    init_sim(t_sim *sim);
 void    destroy_sim(t_sim *sim);
+
+//CODER ROUTINE
+void    *coder_routine(void *arg);
 
 #endif
