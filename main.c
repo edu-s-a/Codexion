@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/29 19:24:39 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/09/30 13:44:25 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,22 @@ int is_valid_int(const char *str)
 	return (0);
 }
 
+int	parse_scheduler(const char *arg, t_scheduler *out)
+{
+	if (strcmp(arg, "fifo") == 0)
+	{
+		*out = fifo;
+		return (0);
+	}
+	if (strcmp(arg, "edf") == 0)
+	{
+		*out = edf;
+		return (0);
+	}
+	fprintf(stderr, "ERROR: Invalid scheduler. Must be \"fifo\" or \"edf\"\n");
+	return (1);
+}
+
 int	parse_args(char **argv, t_config *config)
 {
     int i;
@@ -57,8 +73,8 @@ int	parse_args(char **argv, t_config *config)
     i = 1;
     while (i < 8){
         if (is_valid_int(argv[i])) {
-            fprintf(stderr, "ERROR: Value too large.\n");
-            return 1;
+            fprintf(stderr, "ERROR: Invalid numeric argument. %s\n", argv[i]);
+            return (1);
         }
         i++;
     }
@@ -69,8 +85,9 @@ int	parse_args(char **argv, t_config *config)
     config->refactor_time = atoi(argv[5]);
     config->num_compiles = atoi(argv[6]);
     config->cooldown = atoi(argv[7]);
-    config->scheduler = argv[8];
-    return 0;
+    if (parse_scheduler(argv[8], &config->scheduler) != 0)
+	    return (1);
+    return (0);
 }
 
 int validate_args (t_config *config)
@@ -78,30 +95,24 @@ int validate_args (t_config *config)
     
     if (config->num_coders <1 || config->num_coders > 200){
         fprintf(stderr, "ERROR: Invalid number of coders.   Range = [1-200]\n");
-        return 1;
+        return (1);
     }
     if (config->burnout_time <= 0 || config->compile_time <= 0 || 
         config->debug_time <= 0 || config->refactor_time <= 0 || 
         config->cooldown < 0){
             fprintf(stderr, "ERROR: Invalid time.   Range = [0-INT_MAX]\n");
-            return 1;
+            return (1);
     }
     if (config->num_compiles < 0 ){
         fprintf(stderr, "ERROR: Invalid number of compiles.   Range = [0-INT_MAX]\n");
-        return 1;
+        return (1);
     }
-    if (strcmp(config->scheduler, "fifo") != 0
-        && strcmp(config->scheduler, "edf") !=0){
-            fprintf(stderr, "ERROR: Invalid scheduler.  Must be \"fifo\" or \"edf\"\n");
-            return 1;
-        }
-    return 0;
+    return (0);
 }
 
 int main(int argc, char **argv)
 {
     
-    t_config config;
     t_sim sim;
 
     if (argc != 9){
@@ -110,17 +121,13 @@ int main(int argc, char **argv)
                 "-time_to_compile\n -time_to_debug\n "
                 "-time_to_refactor\n -number_of_compiles_required\n "
                 "-dongle_cooldown\n -scheduler\n");
-        return(EXIT_FAILURE);
-            
-    }else{
-        if (parse_args(argv, &config))
-            return 1;
-        if (validate_args(&config))
-            return 1;
+        return(EXIT_FAILURE);   
     }
-    gettimeofday(&sim.t0, NULL);
-    usleep(250000);
-    printf("\nElapsed time: %ldms\n\n", get_elapsed_time(&sim));
-    return 0;
+    if (parse_args(argv, &sim.config))
+        return (1);
+    if (validate_args(&sim.config))
+        return (1);
+
+    return (0);
 }
 
