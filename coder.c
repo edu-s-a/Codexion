@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 17:14:10 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/30 18:44:39 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/01 13:22:51 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,5 @@ void    *coder_routine(void *arg)
         log_msg(sim,coder->id,"is refactoring");
         usleep(sim->config.refactor_time *1000);
     }
+    return(NULL);
 }
