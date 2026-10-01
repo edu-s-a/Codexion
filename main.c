@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/30 18:51:23 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/01 13:56:19 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,11 @@ int validate_args (t_config *config)
 
 int main(int argc, char **argv)
 {
-    t_thread_arg	t_arg;
+    t_thread_arg	*t_arg;
     t_sim           sim;
+    int             i;
 
+    i = 0;
     if (argc != 9){
         fprintf(stderr,"ERROR: input should be 8 arguments long.\n");
         fprintf(stderr,"Input order:\n -number_of_coders\n -time_to_burnout\n "
@@ -135,10 +137,26 @@ int main(int argc, char **argv)
     sim.stopped = false;
     if (!init_sim(&sim))
 		return (1);
-	t_arg.sim = &sim;
-	t_arg.coder_id = 0;
-    pthread_create(&sim.coders[0].thread, NULL, coder_routine, &t_arg);
-    pthread_join(sim.coders[0].thread, NULL);
+    t_arg = malloc(sizeof(t_thread_arg) * sim.config.num_coders);
+    if (!t_arg)
+    {
+        destroy_sim(&sim);
+        return(1);
+    }
+    while (i < sim.config.num_coders)
+    {
+        t_arg[i].sim = &sim;
+	    t_arg[i].coder_id = i;
+        pthread_create(&sim.coders[i].thread, NULL, coder_routine, &t_arg[i]);
+        i++;
+    }
+    i = 0;
+    while (i < sim.config.num_coders)
+    {
+        pthread_join(sim.coders[i].thread, NULL);
+        i++;
+    }
+    free(t_arg);
 	destroy_sim(&sim);
     //END TEST
     return (0);
