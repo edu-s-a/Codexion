@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 17:14:10 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/01 13:22:51 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/01 18:02:46 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ void    *coder_routine(void *arg)
         log_msg(sim,coder->id,"has taken a dongle");
         log_msg(sim,coder->id,"has taken a dongle");
         log_msg(sim,coder->id,"is compiling");
-        usleep(sim->config.compile_time *1000);
+        usleep(sim->config.time_to_compile *1000);
         if (coder->left != coder->right)
 			pthread_mutex_unlock(&coder->right->d_mutex);
         log_msg(sim,coder->id,"is debugging");
-        usleep(sim->config.debug_time *1000);
+        usleep(sim->config.time_to_debug *1000);
         log_msg(sim,coder->id,"is refactoring");
-        usleep(sim->config.refactor_time *1000);
+        usleep(sim->config.time_to_refactor *1000);
     }
     return(NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/01 13:56:19 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/01 18:04:08 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ int	parse_args(char **argv, t_config *config)
         }
         i++;
     }
-    config->num_coders = atoi(argv[1]);
-    config->burnout_time = atoi(argv[2]);
-    config->compile_time = atoi(argv[3]);
-    config->debug_time = atoi(argv[4]);
-    config->refactor_time = atoi(argv[5]);
-    config->num_compiles = atoi(argv[6]);
-    config->cooldown = atoi(argv[7]);
+    config->number_of_coders = atoi(argv[1]);
+    config->time_to_burnout = atoi(argv[2]);
+    config->time_to_compile = atoi(argv[3]);
+    config->time_to_debug = atoi(argv[4]);
+    config->time_to_refactor = atoi(argv[5]);
+    config->number_of_compiles_required = atoi(argv[6]);
+    config->dongle_cooldown = atoi(argv[7]);
     if (parse_scheduler(argv[8], &config->scheduler) != 0)
 	    return (1);
     return (0);
@@ -93,17 +93,17 @@ int	parse_args(char **argv, t_config *config)
 int validate_args (t_config *config)
 {
     
-    if (config->num_coders <1 || config->num_coders > 200){
+    if (config->number_of_coders <1 || config->number_of_coders > 200){
         fprintf(stderr, "ERROR: Invalid number of coders.   Range = [1-200]\n");
         return (1);
     }
-    if (config->burnout_time <= 0 || config->compile_time <= 0 || 
-        config->debug_time <= 0 || config->refactor_time <= 0 || 
-        config->cooldown < 0){
+    if (config->time_to_burnout <= 0 || config->time_to_compile <= 0 || 
+        config->time_to_debug <= 0 || config->time_to_refactor <= 0 || 
+        config->dongle_cooldown < 0){
             fprintf(stderr, "ERROR: Invalid time.   Range = [0-INT_MAX]\n");
             return (1);
     }
-    if (config->num_compiles < 0 ){
+    if (config->number_of_compiles_required < 0 ){
         fprintf(stderr, "ERROR: Invalid number of compiles.   Range = [0-INT_MAX]\n");
         return (1);
     }
@@ -137,13 +137,13 @@ int main(int argc, char **argv)
     sim.stopped = false;
     if (!init_sim(&sim))
 		return (1);
-    t_arg = malloc(sizeof(t_thread_arg) * sim.config.num_coders);
+    t_arg = malloc(sizeof(t_thread_arg) * sim.config.number_of_coders);
     if (!t_arg)
     {
         destroy_sim(&sim);
         return(1);
     }
-    while (i < sim.config.num_coders)
+    while (i < sim.config.number_of_coders)
     {
         t_arg[i].sim = &sim;
 	    t_arg[i].coder_id = i;
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
         i++;
     }
     i = 0;
-    while (i < sim.config.num_coders)
+    while (i < sim.config.number_of_coders)
     {
         pthread_join(sim.coders[i].thread, NULL);
         i++;

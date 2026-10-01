@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/30 18:44:43 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/01 18:27:51 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ typedef enum e_scheduler
 
 typedef struct s_config
 {
-    int             num_coders;
-    long            burnout_time;
-    long            compile_time;
-    long            debug_time;
-    long            refactor_time;
-    long            num_compiles;
-    long            cooldown;
+    int             number_of_coders;
+    long            time_to_burnout;
+    long            time_to_compile;
+    long            time_to_debug;
+    long            time_to_refactor;
+    long            number_of_compiles_required;
+    long            dongle_cooldown;
     t_scheduler     scheduler;
 }   t_config;
 
@@ -44,14 +44,14 @@ typedef struct s_dongle
 {
     int             id;
     int             coder_id;
-    long            cooldown;
+    long            dongle_cooldown;
     bool            held;
     pthread_mutex_t d_mutex;
-    
+    pthread_cond_t  d_cond;
 }   t_dongle;
 
 typedef struct s_coder
-{
+{   
     int             id;
     int             compile_count;
     long            last_compile_start;
@@ -75,6 +75,19 @@ typedef struct s_thread_arg
 	t_sim	*sim;
 	int		coder_id;
 }	t_thread_arg;
+
+typedef struct s_heap_entry
+{
+	long	priority;
+	int		coder_id;
+}	t_heap_entry;
+
+typedef struct s_heap
+{
+	t_heap_entry	*data;
+	int				size;
+	int				capacity;
+}	t_heap;
 
 long    get_elapsed_time(t_sim *sim);
 void    log_msg(t_sim *sim, int coder_id, const char *msg);
