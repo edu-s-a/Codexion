@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/01 18:27:51 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/02 12:21:57 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,15 @@ typedef struct s_thread_arg
 	int		coder_id;
 }	t_thread_arg;
 
-typedef struct s_heap_entry
+typedef struct s_request
 {
+    int		coder_id;
 	long	priority;
-	int		coder_id;
-}	t_heap_entry;
+}	t_request;
 
 typedef struct s_heap
 {
-	t_heap_entry	*data;
+	t_request	    *data;
 	int				size;
 	int				capacity;
 }	t_heap;
@@ -98,5 +98,17 @@ void    destroy_sim(t_sim *sim);
 
 //CODER ROUTINE
 void    *coder_routine(void *arg);
+
+// HEAP
+
+bool    heap_init(t_heap *h, int capacity);
+void	heap_destroy(t_heap *heap);
+bool	heap_push(t_heap *heap, int coder_id, long priority);
+int     find_min_index(t_heap *heap);
+bool	heap_peek(t_heap *heap, t_request *out);
+bool	heap_pop(t_heap *heap, t_request *out);
+bool	heap_remove(t_heap *heap, int coder_id);
+bool	heap_is_empty(t_heap *heap);
+
 
 #endif
