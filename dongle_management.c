@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 11:54:12 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/05 13:47:32 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/05 17:10:18 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ bool    dongle_request(t_dongle *d, t_sim *sim, int coder_id)
 		my_turn = false;
 		if (heap_peek(&d->waiters, &front) && front.coder_id == coder_id
 			&& !d->held && get_elapsed_time(sim) >= d->cooldown_until)
+            printf("%d  %d  %d  %ld  %ld\n", d->coder_id, front.coder_id, d->held, get_elapsed_time(sim), d->cooldown_until);
 			my_turn = true;
 		if (my_turn || sim->stopped)
 			break;
@@ -44,7 +45,7 @@ bool    dongle_request(t_dongle *d, t_sim *sim, int coder_id)
     {
         heap_remove(&d->waiters, coder_id);
         pthread_mutex_unlock(&d->d_mutex);
-        return (true);
+        return (false);
     }
     heap_pop(&d->waiters, &front);
     d->held = true;
