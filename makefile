@@ -1,7 +1,8 @@
 NAME = codexion
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread
+LDFLAGS = -pthread
 
 SRC = main.c \
       coder.c \
