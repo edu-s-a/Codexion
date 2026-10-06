@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 11:54:12 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/05 17:10:18 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:06:04 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,12 @@
 
 bool    dongle_request(t_dongle *d, t_sim *sim, int coder_id)
 {
-    t_request	front;
-	bool		my_turn;
-	long		priority;
+    t_request	    front;
+	bool		    my_turn;
+	long		    priority;
+    struct timeval	now;
+    struct timespec	ts;
+    long			nsec;
     
     pthread_mutex_lock(&d->d_mutex);
     if (sim->config.scheduler == fifo)
@@ -31,17 +34,22 @@ bool    dongle_request(t_dongle *d, t_sim *sim, int coder_id)
 	
     heap_push(&d->waiters, coder_id, priority);
     while (true)
-	{
-		my_turn = false;
-		if (heap_peek(&d->waiters, &front) && front.coder_id == coder_id
-			&& !d->held && get_elapsed_time(sim) >= d->cooldown_until)
-            printf("%d  %d  %d  %ld  %ld\n", d->coder_id, front.coder_id, d->held, get_elapsed_time(sim), d->cooldown_until);
-			my_turn = true;
-		if (my_turn || sim->stopped)
-			break;
-		pthread_cond_wait(&d->cond, &d->d_mutex);
-	}
-    if(sim->stopped && !my_turn)
+    {
+        my_turn = false;
+        if (heap_peek(&d->waiters, &front) && front.coder_id == coder_id
+            && !d->held && get_elapsed_time(sim) >= d->cooldown_until)
+        {
+            my_turn = true;
+        }
+        if (my_turn || sim->stopped)
+            break;
+        gettimeofday(&now, NULL);
+        nsec = now.tv_usec * 1000 + 5000000;
+        ts.tv_sec = now.tv_sec + nsec / 1000000000;
+        ts.tv_nsec = nsec % 1000000000;
+        pthread_cond_timedwait(&d->cond, &d->d_mutex, &ts);
+    }
+    if(sim->stopped)
     {
         heap_remove(&d->waiters, coder_id);
         pthread_mutex_unlock(&d->d_mutex);
