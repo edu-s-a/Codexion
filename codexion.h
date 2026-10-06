@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/05 13:42:56 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/06 12:37:31 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_sim
     t_coder         *coders;
     long            next_priority;
     pthread_mutex_t priority_lock;
+    pthread_t       monitor_thread;
 }   t_sim;
 
 typedef struct s_thread_arg
@@ -120,5 +121,8 @@ bool	heap_is_empty(t_heap *heap);
 bool    dongle_request(t_dongle *d, t_sim *sim, int coder_id);
 void    dongle_release(t_dongle *d, t_sim *sim);
 void	cleanup_partial_dongles(t_sim *sim, int up_to);
+
+//MONITOR
+void	    *monitor_routine(void *arg);
 
 #endif
