@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 19:22:09 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/09/30 12:36:34 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/06 16:57:11 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,6 @@ void    log_msg(t_sim *sim, int coder_id, const char *msg)
         return;
     }
     elapsed = get_elapsed_time(sim);
-    printf("%ld %d %s\n", elapsed, coder_id, msg);
+    printf("%ld %d %s\n", elapsed, coder_id + 1, msg);
     pthread_mutex_unlock(&sim->log_lock);
 }
