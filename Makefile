@@ -2,16 +2,17 @@ NAME = codexion
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
-LDFLAGS = -pthread
+INCLUDE = codexion.h
 
 SRC = main.c \
       coder.c \
       dongle_management.c \
-      heap_1.c\
-	  heap_2.c\
-	  logger.c\
-	  sim.c\
-	  time_management.c
+      heap_1.c \
+      heap_2.c \
+      logger.c \
+      sim.c \
+      monitor.c \
+      time_management.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -19,8 +20,8 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
-	
-%.o: %.c $(INCLUDE)	Makefile
+
+%.o: %.c $(INCLUDE) Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
