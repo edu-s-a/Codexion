@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/01 18:04:08 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/06 12:34:52 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,12 +150,14 @@ int main(int argc, char **argv)
         pthread_create(&sim.coders[i].thread, NULL, coder_routine, &t_arg[i]);
         i++;
     }
+    pthread_create(&sim.monitor_thread, NULL, monitor_routine, &sim);
     i = 0;
     while (i < sim.config.number_of_coders)
     {
         pthread_join(sim.coders[i].thread, NULL);
         i++;
     }
+    pthread_join(sim.monitor_thread, NULL);
     free(t_arg);
 	destroy_sim(&sim);
     //END TEST
