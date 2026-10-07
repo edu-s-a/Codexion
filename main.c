@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/06 12:34:52 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:33:31 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ int	parse_args(char **argv, t_config *config)
 int validate_args (t_config *config)
 {
     
-    if (config->number_of_coders <1 || config->number_of_coders > 200){
-        fprintf(stderr, "ERROR: Invalid number of coders.   Range = [1-200]\n");
+    if (config->number_of_coders <1 || config->number_of_coders > 100000){
+        fprintf(stderr, "ERROR: Invalid number of coders.   Range = [1-100000]\n");
         return (1);
     }
     if (config->time_to_burnout <= 0 || config->time_to_compile <= 0 || 
