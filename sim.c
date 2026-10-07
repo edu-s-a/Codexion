@@ -6,30 +6,16 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 17:14:17 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 17:01:05 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 19:16:40 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-bool	init_sim(t_sim *sim)
+static bool	initialize_dongles(t_sim *sim, int count)
 {
-	int	count;
 	int	i;
 
-	count = sim->config.number_of_coders;
-	sim->next_priority = 0;
-	if (pthread_mutex_init(&sim->priority_lock, NULL) != 0)
-		return (false);
-	sim->dongles = malloc(sizeof(t_dongle) * count);
-	if (!sim->dongles)
-		return (false);
-	sim->coders = malloc(sizeof(t_coder) * count);
-	if (!sim->coders)
-	{
-		free (sim->dongles);
-		return (false);
-	}
 	i = 0;
 	while (i < count)
 	{
@@ -42,12 +28,17 @@ bool	init_sim(t_sim *sim)
 			|| pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
 		{
 			cleanup_partial_dongles(sim, i);
-			free(sim->dongles);
-			free(sim->coders);
 			return (false);
 		}
 		i++;
 	}
+	return (true);
+}
+
+static void	initialize_coders(t_sim *sim, int count)
+{
+	int	i;
+
 	i = 0;
 	while (i < count)
 	{
@@ -58,6 +49,46 @@ bool	init_sim(t_sim *sim)
 		sim->coders[i].right = &sim->dongles[(i + 1) % count];
 		i++;
 	}
+}
+
+void	cleanup_partial_dongles(t_sim *sim, int up_to)
+{
+	int	j;
+
+	j = 0;
+	while (j < up_to)
+	{
+		pthread_mutex_destroy(&sim->dongles[j].d_mutex);
+		heap_destroy(&sim->dongles[j].waiters);
+		pthread_cond_destroy(&sim->dongles[j].cond);
+		j++;
+	}
+}
+
+bool	init_sim(t_sim *sim)
+{
+	int	count;
+
+	count = sim->config.number_of_coders;
+	sim->next_priority = 0;
+	if (pthread_mutex_init(&sim->priority_lock, NULL) != 0)
+		return (false);
+	sim->dongles = malloc(sizeof(t_dongle) * count);
+	if (!sim->dongles)
+		return (false);
+	sim->coders = malloc(sizeof(t_coder) * count);
+	if (!sim->coders)
+	{
+		free(sim->dongles);
+		return (false);
+	}
+	if (!initialize_dongles(sim, count))
+	{
+		free(sim->dongles);
+		free(sim->coders);
+		return (false);
+	}
+	initialize_coders(sim, count);
 	return (true);
 }
 
@@ -77,18 +108,4 @@ void	destroy_sim(t_sim *sim)
 	pthread_mutex_destroy(&sim->priority_lock);
 	free(sim->dongles);
 	free(sim->coders);
-}
-
-void	cleanup_partial_dongles(t_sim *sim, int up_to)
-{
-	int	j;
-
-	j = 0;
-	while (j < up_to)
-	{
-		pthread_mutex_destroy(&sim->dongles[j].d_mutex);
-		heap_destroy(&sim->dongles[j].waiters);
-		pthread_cond_destroy(&sim->dongles[j].cond);
-		j++;
-	}
 }
