@@ -5,6 +5,9 @@ CFLAGS = -Wall -Wextra -Werror -pthread
 INCLUDE = codexion.h
 
 SRC = main.c \
+	  parser.c\
+	  int_validation.c\
+	  thread_pool.c\
       coder.c \
       dongle_management.c \
       heap_1.c \
