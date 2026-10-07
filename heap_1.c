@@ -6,20 +6,20 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 10:57:30 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/02 12:51:03 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 12:45:29 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-bool    heap_init(t_heap *h, int capacity)
+bool	heap_init(t_heap *h, int capacity)
 {
-    h->data = malloc(sizeof(t_request) * capacity);
-    if (!h->data)
-        return (false);
-    h->capacity = capacity;
-    h->size = 0;
-    return (true);
+	h->data = malloc(sizeof(t_request) * capacity);
+	if (!h->data)
+		return (false);
+	h->capacity = capacity;
+	h->size = 0;
+	return (true);
 }
 
 void	heap_destroy(t_heap *heap)
