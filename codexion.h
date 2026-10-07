@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/06 12:37:31 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:32:52 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ typedef struct s_dongle
     long            cooldown_until;
     bool            held;
     pthread_mutex_t d_mutex;
-    pthread_cond_t  d_cond;
     t_heap          waiters;
     pthread_cond_t  cond;
 }   t_dongle;
