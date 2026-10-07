@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 17:14:17 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/05 13:42:45 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:25:43 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,18 @@ void    destroy_sim(t_sim *sim)
     pthread_mutex_destroy(&sim->priority_lock);
     free(sim->dongles);
     free(sim->coders);
+}
+
+void	cleanup_partial_dongles(t_sim *sim, int up_to)
+{
+	int	j;
+
+	j = 0;
+	while (j < up_to)
+	{
+		pthread_mutex_destroy(&sim->dongles[j].d_mutex);
+		heap_destroy(&sim->dongles[j].waiters);
+		pthread_cond_destroy(&sim->dongles[j].cond);
+		j++;
+	}
 }
