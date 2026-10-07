@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 17:14:10 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/06 13:31:43 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:31:28 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	*coder_routine(void *arg)
             if (coder->left != coder->right)
                 dongle_release(coder->right, sim);
         }
+        log_msg(sim, coder->id, "is debugging");
 		usleep(sim->config.time_to_debug * 1000);
 		log_msg(sim, coder->id, "is refactoring");
 		usleep(sim->config.time_to_refactor * 1000);
