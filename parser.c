@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/07 16:47:38 by edsole-a          #+#    #+#             */
+/*   Updated: 2026/10/07 16:48:52 by edsole-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 int	parse_scheduler(const char *arg, t_scheduler *out)
@@ -46,7 +58,8 @@ int	validate_args(t_config *config)
 {
 	if (config->number_of_coders < 1 || config->number_of_coders > 100000)
 	{
-		fprintf(stderr, "ERROR: Invalid number of coders. Range = [1-100000]\n");
+		fprintf(stderr, "ERROR: Invalid number of coders."
+			" Range = [1-100000]\n");
 		return (1);
 	}
 	if (config->time_to_burnout <= 0 || config->time_to_compile <= 0
@@ -58,7 +71,8 @@ int	validate_args(t_config *config)
 	}
 	if (config->number_of_compiles_required < 0)
 	{
-		fprintf(stderr, "ERROR: Invalid number of compiles. Range = [0-INT_MAX]\n");
+		fprintf(stderr, "ERROR: Invalid number of compiles."
+			" Range = [0-INT_MAX]\n");
 		return (1);
 	}
 	return (0);

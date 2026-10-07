@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 16:32:58 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:49:11 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,3 @@ int	main(int argc, char **argv)
 	run_simulation(&sim);
 	return (0);
 }
-
