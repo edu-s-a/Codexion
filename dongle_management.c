@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 11:54:12 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 14:05:12 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/07 14:07:34 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,18 +87,4 @@ void	dongle_release(t_dongle *d, t_sim *sim)
 		+ sim->config.dongle_cooldown;
 	pthread_cond_broadcast(&d->cond);
 	pthread_mutex_unlock(&d->d_mutex);
-}
-
-void	cleanup_partial_dongles(t_sim *sim, int up_to)
-{
-	int	j;
-
-	j = 0;
-	while (j < up_to)
-	{
-		pthread_mutex_destroy(&sim->dongles[j].d_mutex);
-		heap_destroy(&sim->dongles[j].waiters);
-		pthread_cond_destroy(&sim->dongles[j].cond);
-		j++;
-	}
 }
