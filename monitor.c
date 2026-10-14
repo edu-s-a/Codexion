@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 12:32:47 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 19:01:39 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/14 15:56:29 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,19 @@ static int	find_burned_coder(t_sim *sim, long now)
 	int		i;
 
 	i = 0;
+	pthread_mutex_lock(&sim->log_lock);
 	while (i < sim->config.number_of_coders)
 	{
 		deadline = sim->coders[i].last_compile_start
 			+ sim->config.time_to_burnout;
 		if (now >= deadline)
+		{
+			pthread_mutex_unlock(&sim->log_lock);
 			return (i);
+		}
 		i++;
 	}
+	pthread_mutex_unlock(&sim->log_lock);
 	return (-1);
 }
 
@@ -34,13 +39,18 @@ static bool	all_compiles_done(t_sim *sim)
 	int	i;
 
 	i = 0;
+	pthread_mutex_lock(&sim->log_lock);
 	while (i < sim->config.number_of_coders)
 	{
 		if (sim->coders[i].compile_count
 			< sim->config.number_of_compiles_required)
-			return (false);
+			{
+				pthread_mutex_unlock(&sim->log_lock);
+				return (false);
+			}
 		i++;
 	}
+	pthread_mutex_unlock(&sim->log_lock);
 	return (true);
 }
 
@@ -73,13 +83,13 @@ void	*monitor_routine(void *arg)
 	int		burned_coder;
 
 	sim = (t_sim *)arg;
-	while (!sim->stopped)
+	while (!sim_is_stopped(sim))
 	{
 		now = get_elapsed_time(sim);
 		burned_coder = find_burned_coder(sim, now);
 		if (burned_coder != -1)
 		{
-			log_msg(sim, burned_coder, "burned out");
+			log_burnout(sim, burned_coder);
 			stop_simulation(sim);
 			break ;
 		}
