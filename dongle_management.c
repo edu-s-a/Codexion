@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 11:54:12 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 14:07:34 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/14 14:12:37 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,12 @@ static long	dongle_get_priority(t_sim *sim, int coder_id)
 		pthread_mutex_unlock(&sim->priority_lock);
 	}
 	else
+	{
+		pthread_mutex_lock(&sim->log_lock);
 		priority = sim->coders[coder_id].last_compile_start
 			+ sim->config.time_to_burnout;
+		pthread_mutex_unlock(&sim->log_lock);
+	}
 	return (priority);
 }
 
@@ -65,9 +69,9 @@ bool	dongle_request(t_dongle *d, t_sim *sim, int coder_id)
 	pthread_mutex_lock(&d->d_mutex);
 	priority = dongle_get_priority(sim, coder_id);
 	heap_push(&d->waiters, coder_id, priority);
-	while (!dongle_is_ready(d, sim, coder_id) && !sim->stopped)
+	while (!dongle_is_ready(d, sim, coder_id) && !sim_is_stopped(sim))
 		dongle_timed_wait(d);
-	if (sim->stopped)
+	if (sim_is_stopped(sim))
 	{
 		heap_remove(&d->waiters, coder_id);
 		pthread_mutex_unlock(&d->d_mutex);
