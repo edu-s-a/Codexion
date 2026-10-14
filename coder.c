@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 17:14:10 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 11:57:19 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/14 15:53:27 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void	do_compile_phase(t_coder *coder, t_sim *sim)
 	log_msg(sim, coder->id, "has taken a dongle");
 	log_msg(sim, coder->id, "has taken a dongle");
 	log_msg(sim, coder->id, "is compiling");
-	usleep(sim->config.time_to_compile * 1000);
+	sleep_ms(sim, sim->config.time_to_compile);
 	pthread_mutex_lock(&sim->log_lock);
 	coder->compile_count++;
 	pthread_mutex_unlock(&sim->log_lock);
@@ -68,9 +68,9 @@ static void	do_compile_phase(t_coder *coder, t_sim *sim)
 static void	do_debug_refactor_phase(t_coder *coder, t_sim *sim)
 {
 	log_msg(sim, coder->id, "is debugging");
-	usleep(sim->config.time_to_debug * 1000);
+	sleep_ms(sim, sim->config.time_to_debug);
 	log_msg(sim, coder->id, "is refactoring");
-	usleep(sim->config.time_to_refactor * 1000);
+	sleep_ms(sim, sim->config.time_to_refactor);
 }
 
 void	*coder_routine(void *arg)
