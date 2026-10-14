@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 16:47:16 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/14 15:57:13 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,9 @@ typedef struct s_thread_arg
 
 /* UTILS */
 long	get_elapsed_time(t_sim *sim);
+void	sleep_ms(t_sim *sim, long duration_ms);
 void	log_msg(t_sim *sim, int coder_id, const char *msg);
+void	log_burnout(t_sim *sim, int coder_id);
 
 /* INT VALIDATION */
 int		is_valid_int(const char *str);
@@ -111,6 +113,7 @@ void	run_simulation(t_sim *sim);
 /* SIM */
 bool	init_sim(t_sim *sim);
 void	destroy_sim(t_sim *sim);
+bool	sim_is_stopped(t_sim *sim);
 
 /* CODER ROUTINE */
 void	*coder_routine(void *arg);
