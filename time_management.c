@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 19:06:13 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 16:58:31 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/14 15:53:52 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,12 @@ long	get_elapsed_time(t_sim *sim)
 	}
 	elapsed = (sec * 1000 + usec / 1000);
 	return (elapsed);
+}
+void    sleep_ms(t_sim *sim, long duration_ms)
+{
+    long    end;
+
+    end = get_elapsed_time(sim) + duration_ms;
+    while (get_elapsed_time(sim) < end && !sim_is_stopped(sim))
+        usleep(500);
 }
