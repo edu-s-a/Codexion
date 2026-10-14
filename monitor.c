@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 12:32:47 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/14 15:56:29 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/14 17:58:04 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ static bool	all_compiles_done(t_sim *sim)
 	{
 		if (sim->coders[i].compile_count
 			< sim->config.number_of_compiles_required)
-			{
-				pthread_mutex_unlock(&sim->log_lock);
-				return (false);
-			}
+		{
+			pthread_mutex_unlock(&sim->log_lock);
+			return (false);
+		}
 		i++;
 	}
 	pthread_mutex_unlock(&sim->log_lock);
