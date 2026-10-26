@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/14 15:57:13 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/26 12:41:09 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int		parse_args(char **argv, t_config *config);
 int		validate_args(t_config *config);
 
 /* THREAD POOL */
-void	run_simulation(t_sim *sim);
+int		run_simulation(t_sim *sim);
 
 /* SIM */
 bool	init_sim(t_sim *sim);
@@ -135,5 +135,6 @@ void	cleanup_partial_dongles(t_sim *sim, int up_to);
 
 /* MONITOR */
 void	*monitor_routine(void *arg);
+void	stop_simulation(t_sim *sim);
 
 #endif
