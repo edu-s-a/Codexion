@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 12:32:47 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/14 17:58:04 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/26 12:40:08 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	wake_all_dongles(t_sim *sim)
 	}
 }
 
-static void	stop_simulation(t_sim *sim)
+void	stop_simulation(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->log_lock);
 	sim->stopped = true;
