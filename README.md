@@ -16,10 +16,16 @@ end of the simulation. No global variables: all shared state lives in `t_sim`.
 
 ## Instructions
 
-    make                 # builds ./codexion
-    ./codexion number_of_coders time_to_burnout time_to_compile \
-               time_to_debug time_to_refactor number_of_compiles_required \
-               dongle_cooldown scheduler        # scheduler: fifo | edf
+    make # builds ./codexion
+    	./codexion
+		number_of_coders
+		time_to_burnout
+		time_to_compile
+        time_to_debug
+		time_to_refactor
+		number_of_compiles_required
+		dongle_cooldown
+		scheduler # scheduler: fifo | edf
     make clean | fclean | re
 
 Example:
