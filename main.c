@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/26 12:39:59 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/27 13:52:31 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int	main(int argc, char **argv)
 	}
 	if (parse_args(argv, &sim.config) || validate_args(&sim.config))
 		return (1);
+	if (sim.config.number_of_compiles_required == 0)
+		return (0);
 	if (!setup_sim(&sim))
 	{
 		fprintf(stderr, "ERROR: initialization failed\n");
