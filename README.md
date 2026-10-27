@@ -90,9 +90,13 @@ that broadcasts cannot be missed between the check and the sleep. The
 coder/monitor channel is the stop flag, only ever read through
 `sim_is_stopped` and written under `log_lock`.
 
-The waiting queue is an array-backed priority queue with a linear minimum
-scan; a dongle has only two neighbouring coders, so at most two entries
-ever wait on it.
+Each dongle's waiting queue is an array-backed binary min-heap. The key is
+the arrival counter (`fifo`) or the burnout deadline (`edf`), ties broken
+by coder id. `push` appends and sifts up, `pop` moves the last element to
+the root and sifts down, `remove` (used when the simulation stops while a
+coder is waiting) replaces the element with the last one and sifts both
+ways. Push and pop are O(log k) and peek is O(1); the heap is only ever
+touched while holding that dongle's `d_mutex`.
 
 ## Testing
 
