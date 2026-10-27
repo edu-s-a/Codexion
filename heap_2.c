@@ -6,31 +6,65 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 12:15:39 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 12:45:52 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/27 12:46:40 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-bool	heap_peek(t_heap *heap, t_request *out)
+#include "codexion.h"
+
+static bool	heap_less(t_request *a, t_request *b)
 {
-	if (heap->size == 0)
-		return (false);
-	*out = heap->data[find_min_index(heap)];
-	return (true);
+	if (a->priority != b->priority)
+		return (a->priority < b->priority);
+	return (a->coder_id < b->coder_id);
 }
 
-bool	heap_pop(t_heap *heap, t_request *out)
+static void	heap_swap(t_request *a, t_request *b)
 {
-	int	min_i;
+	t_request	tmp;
 
-	if (heap->size == 0)
-		return (false);
-	min_i = find_min_index(heap);
-	*out = heap->data[min_i];
-	heap->size--;
-	heap->data[min_i] = heap->data[heap->size];
-	return (true);
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+void	heap_sift_up(t_heap *heap, int i)
+{
+	int	parent;
+
+	while (i > 0)
+	{
+		parent = (i - 1) / 2;
+		if (!heap_less(&heap->data[i], &heap->data[parent]))
+			return ;
+		heap_swap(&heap->data[i], &heap->data[parent]);
+		i = parent;
+	}
+}
+
+void	heap_sift_down(t_heap *heap, int i)
+{
+	int	smallest;
+	int	child;
+
+	while (true)
+	{
+		smallest = i;
+		child = 2 * i + 1;
+		if (child < heap->size
+			&& heap_less(&heap->data[child], &heap->data[smallest]))
+			smallest = child;
+		child++;
+		if (child < heap->size
+			&& heap_less(&heap->data[child], &heap->data[smallest]))
+			smallest = child;
+		if (smallest == i)
+			return ;
+		heap_swap(&heap->data[i], &heap->data[smallest]);
+		i = smallest;
+	}
 }
 
 bool	heap_remove(t_heap *heap, int coder_id)
@@ -43,11 +77,11 @@ bool	heap_remove(t_heap *heap, int coder_id)
 	if (i == heap->size)
 		return (false);
 	heap->size--;
-	heap->data[i] = heap->data[heap->size];
+	if (i < heap->size)
+	{
+		heap->data[i] = heap->data[heap->size];
+		heap_sift_down(heap, i);
+		heap_sift_up(heap, i);
+	}
 	return (true);
-}
-
-bool	heap_is_empty(t_heap *heap)
-{
-	return (heap->size == 0);
 }

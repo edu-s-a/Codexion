@@ -6,9 +6,11 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 10:57:30 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/07 12:45:29 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/27 12:46:31 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "codexion.h"
 
 #include "codexion.h"
 
@@ -37,21 +39,28 @@ bool	heap_push(t_heap *heap, int coder_id, long priority)
 	heap->data[heap->size].coder_id = coder_id;
 	heap->data[heap->size].priority = priority;
 	heap->size++;
+	heap_sift_up(heap, heap->size - 1);
 	return (true);
 }
 
-int	find_min_index(t_heap *heap)
+bool	heap_peek(t_heap *heap, t_request *out)
 {
-	int	i;
-	int	min_i;
+	if (heap->size == 0)
+		return (false);
+	*out = heap->data[0];
+	return (true);
+}
 
-	min_i = 0;
-	i = 1;
-	while (i < heap->size)
+bool	heap_pop(t_heap *heap, t_request *out)
+{
+	if (heap->size == 0)
+		return (false);
+	*out = heap->data[0];
+	heap->size--;
+	if (heap->size > 0)
 	{
-		if (heap->data[i].priority < heap->data[min_i].priority)
-			min_i = i;
-		i++;
+		heap->data[0] = heap->data[heap->size];
+		heap_sift_down(heap, 0);
 	}
-	return (min_i);
+	return (true);
 }

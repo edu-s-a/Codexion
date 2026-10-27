@@ -6,7 +6,7 @@
 /*   By: edsole-a <edsole-a@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:05:42 by edsole-a          #+#    #+#             */
-/*   Updated: 2026/10/26 12:41:09 by edsole-a         ###   ########.fr       */
+/*   Updated: 2026/10/27 12:43:50 by edsole-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,11 +122,11 @@ void	*coder_routine(void *arg);
 bool	heap_init(t_heap *h, int capacity);
 void	heap_destroy(t_heap *heap);
 bool	heap_push(t_heap *heap, int coder_id, long priority);
-int		find_min_index(t_heap *heap);
 bool	heap_peek(t_heap *heap, t_request *out);
 bool	heap_pop(t_heap *heap, t_request *out);
 bool	heap_remove(t_heap *heap, int coder_id);
-bool	heap_is_empty(t_heap *heap);
+void	heap_sift_up(t_heap *heap, int i);
+void	heap_sift_down(t_heap *heap, int i);
 
 /* DONGLE MANAGEMENT */
 bool	dongle_request(t_dongle *d, t_sim *sim, int coder_id);
